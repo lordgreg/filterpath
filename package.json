@@ -1,7 +1,7 @@
 {
   "name": "buildpath",
   "private": true,
-  "version": "0.82.4",
+  "version": "0.82.5",
   "type": "module",
   "description": "Build-specific Path of Exile loot filters in three clicks.",
   "scripts": {

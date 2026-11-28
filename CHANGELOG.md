@@ -2,6 +2,13 @@
 
 All notable changes to BuildPath. The same data powers the in-site changelog.
 
+## 0.82.5 — 2026-11-28
+
+Soft jewel coverage.
+
+- **Soft filters show every abyss family eye.** The soft filter now shows all four family eyes; strict and uber keep only the build's own eye. Cluster jewels are unchanged.
+- 813 tests.
+
 ## 0.82.4 — 2026-11-28
 
 Contents active state.

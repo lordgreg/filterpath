@@ -17,6 +17,17 @@ export const REPO_URL = 'https://github.com/lordgreg/buildpath';
 
 export const RELEASES: Release[] = [
   {
+    version: '0.82.5',
+    date: '2026-11-28',
+    title: 'Soft jewel coverage',
+    notes: [
+      "**Soft filters show every abyss family eye.** The soft filter now shows all four family eyes; strict and uber keep only the build's own eye. Cluster jewels are unchanged.",
+      '813 tests.',
+    ],
+    commits: [],
+    compare: 'v0.82.4...v0.82.5',
+  },
+  {
     version: '0.82.4',
     date: '2026-11-28',
     title: 'Contents active state',
