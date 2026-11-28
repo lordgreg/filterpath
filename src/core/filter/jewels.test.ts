@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { FAMILIES } from '../../meta/families.ts';
+import { evaluateRules, type PreviewItem } from '../preview/match.ts';
 import { compileFilter } from './generate.ts';
 import { STRICTNESS_ORDER } from './presets.ts';
 
@@ -10,6 +11,8 @@ const ABYSS_EYE: Record<string, string> = {
   bow: 'Searching Eye Jewel',
   hybrid: 'Searching Eye Jewel',
 };
+
+const ABYSS_EYES = [...new Set(Object.values(ABYSS_EYE))].sort();
 
 describe('jewel coverage', () => {
   for (const family of FAMILIES) {
@@ -35,6 +38,19 @@ describe('jewel coverage', () => {
         );
         expect(abyss?.baseTypes, family.id).toEqual([ABYSS_EYE[family.id]]);
         expect(abyss?.rarity, family.id).toBeUndefined();
+
+        const all = rules.find(
+          (rule) => rule.comment === 'Abyss jewels - all families',
+        );
+        if (strictness === 'soft') {
+          expect(all?.action, family.id).toBe('Show');
+          expect(all?.baseTypes, family.id).toEqual(
+            ABYSS_EYES.filter((base) => base !== ABYSS_EYE[family.id]),
+          );
+          expect(all?.rarity, family.id).toBeUndefined();
+        } else {
+          expect(all, family.id).toBeUndefined();
+        }
       }
     });
   }
@@ -47,5 +63,40 @@ describe('jewel coverage', () => {
     }).rules;
     const abyss = rules.find((rule) => rule.comment?.startsWith('Abyss jewels'));
     expect(abyss?.baseTypes).toEqual(['Ghastly Eye Jewel']);
+    const all = rules.find(
+      (rule) => rule.comment === 'Abyss jewels - all families',
+    );
+    expect(all?.baseTypes).toEqual(
+      ABYSS_EYES.filter((base) => base !== 'Ghastly Eye Jewel'),
+    );
+  });
+
+  it('shows every abyss eye in soft and only the family eye in strict', () => {
+    const selection = { mode: 'family', familyId: 'caster' } as const;
+    const soft = compileFilter({
+      selection,
+      phase: 'endgame',
+      strictness: 'soft',
+    });
+    const strict = compileFilter({
+      selection,
+      phase: 'endgame',
+      strictness: 'strict',
+    });
+    const item = (baseType: string): PreviewItem => ({
+      id: baseType,
+      name: baseType,
+      itemClass: 'Abyss Jewels',
+      baseType,
+      rarity: 'Rare',
+      itemLevel: 83,
+    });
+
+    for (const base of ABYSS_EYES) {
+      expect(evaluateRules(soft.rules, item(base)).shown, base).toBe(true);
+      expect(evaluateRules(strict.rules, item(base)).shown, base).toBe(
+        base === 'Hypnotic Eye Jewel',
+      );
+    }
   });
 });

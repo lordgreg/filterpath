@@ -7,7 +7,7 @@
 # Selection: mode=build&build=summon-skeletons-necromancer&phase=leveling&strictness=soft&theme=rarity
 # League: Covens
 # Presets: 6e7e0295a1a0
-# Rules: 134 - Base types: 83
+# Rules: 135 - Base types: 83
 # Base data: RePoE 1d825f53356023dee0fbb3ec23d94057da8fe0ac (4f01123d)
 # Generated at https://lordgreg.github.io/buildpath/
 # Not affiliated with or endorsed by Grinding Gear Games.
@@ -53,6 +53,15 @@ Show
 # Abyss jewels - minion
 Show
     BaseType == "Ghastly Eye Jewel"
+    SetFontSize 38
+    SetTextColor 255 255 255 255
+    SetBorderColor 120 230 140 255
+    SetBackgroundColor 20 26 58 255
+    MinimapIcon 1 Green Hexagon
+
+# Abyss jewels - all families
+Show
+    BaseType == "Hypnotic Eye Jewel" "Murderous Eye Jewel" "Searching Eye Jewel"
     SetFontSize 38
     SetTextColor 255 255 255 255
     SetBorderColor 120 230 140 255

@@ -1,7 +1,7 @@
 import type { Archetype, ItemSlot, SlotSpec } from '../../archetypes/types.ts';
 import { resolveSlotBases } from '../../data/resolve.ts';
 import { toFilterClass } from '../classes.ts';
-import type { GearStage, Phase, Preset } from '../presets.ts';
+import type { GearStage, Phase, Preset, Strictness } from '../presets.ts';
 import { SLOT_STYLES, type Rule, type Style, type StyleKind } from '../types.ts';
 
 const WEAPON_SLOTS = new Set<ItemSlot>(['weapon', 'offhand']);
@@ -44,6 +44,9 @@ const ABYSS_JEWELS: Record<string, string> = {
   hybrid: 'Searching Eye Jewel',
 };
 
+/** Every family eye, so soft can show the ones the build does not use. */
+const ABYSS_EYE_BASES = [...new Set(Object.values(ABYSS_JEWELS))].sort();
+
 /** Quiet jewel styling: visible and labelled, without an alert. */
 const JEWEL_COVERAGE_STYLE: Style = {
   textColor: SLOT_STYLES.accessory.textColor,
@@ -53,7 +56,10 @@ const JEWEL_COVERAGE_STYLE: Style = {
 };
 
 /** Jewels every build should see, whatever its slot targeting. */
-export function jewelCoverageRules(archetype: Archetype): Rule[] {
+export function jewelCoverageRules(
+  archetype: Archetype,
+  strictness: Strictness,
+): Rule[] {
   const rules: Rule[] = [
     {
       action: 'Show',
@@ -73,6 +79,21 @@ export function jewelCoverageRules(archetype: Archetype): Rule[] {
       styleKind: 'jewel',
       style: JEWEL_COVERAGE_STYLE,
     });
+
+    // Soft keeps every family eye visible; Strict and Uber keep only the
+    // build's own eye. The build eye stays first so it can be styled apart.
+    if (strictness === 'soft') {
+      const others = ABYSS_EYE_BASES.filter((base) => base !== abyss);
+      if (others.length > 0) {
+        rules.push({
+          action: 'Show',
+          comment: 'Abyss jewels - all families',
+          baseTypes: others,
+          styleKind: 'jewel',
+          style: JEWEL_COVERAGE_STYLE,
+        });
+      }
+    }
   }
 
   return rules;
@@ -170,8 +191,9 @@ export function gearRules(
   archetype: Archetype,
   preset: Preset,
   phase: Phase,
+  strictness: Strictness,
 ): Rule[] {
-  const rules: Rule[] = [...jewelCoverageRules(archetype)];
+  const rules: Rule[] = [...jewelCoverageRules(archetype, strictness)];
   const isLeveling = phase === 'leveling' && preset.gearStages.length > 0;
   const stages = isLeveling ? preset.gearStages : [];
 

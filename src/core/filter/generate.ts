@@ -267,7 +267,9 @@ export function compileFilter(config: FilterConfig): CompiledFilter {
     }
   };
 
-  if (sections.gear) add('gear', gearRules(archetype, preset, config.phase));
+  if (sections.gear) {
+    add('gear', gearRules(archetype, preset, config.phase, config.strictness));
+  }
   if (sections.gems) add('gems', gemRules(preset));
   if (sections.currency) add('currency', currencyRules(preset));
   if (sections.maps) add('maps', mapRules(preset, config.phase));
