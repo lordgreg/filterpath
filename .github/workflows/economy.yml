@@ -72,7 +72,7 @@ jobs:
           if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
             # One rolling PR: replace the branch so the open PR picks up today's
             # tiers instead of a new PR per day.
-            git push --force-with-lease origin "$branch"
+            git push --force origin "$branch"
             if [ "$(gh pr list --head "$branch" --state open --json number --jq 'length')" != "0" ]; then
               echo "Updated the open economy PR for $branch."
               exit 0
